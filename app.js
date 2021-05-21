@@ -82,7 +82,7 @@
         },
         onEachFeature: function(feature, layer) {
           let props = feature.properties
-          let tooltip = "<h4>" + props.Region + "</h4><b>City/Region:</b> " + props.Country + "<br><b>Number of firms: </b>" + props.Firms.toLocaleString()
+          let tooltip = "<h5>" + props.Region + "</h5><b>City/Region:</b> " + props.Country + "<br><b>Number of firms: </b>" + props.Firms.toLocaleString()
           layer.bindTooltip(tooltip);
           layer.on('mouseover', function() {
             this.openTooltip();
@@ -139,6 +139,7 @@
   ];
 
   function getColor(d, breaks) {
+    // console.log(breaks);
     if (d <= 0) {
       return colorsCountries[0];
     } else if (d <= breaks[1][1]) {
