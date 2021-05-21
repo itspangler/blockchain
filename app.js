@@ -24,12 +24,13 @@
   const countries = d3.json("data/countries.geojson");
   const firms = d3.json("data/firms.geojson");
 
-  // function getRadius(area) {
-  // let radius = Math.sqrt(area / Math.PI);
-
-  // return radius * .12;
-  // console.log(radius);
-  // }
+  let colorsCountries = ["#FFFFFF",
+    "#d1e3f3",
+    "#9ac8e1",
+    "#529dcc",
+    "#1c6cb1",
+    "#08306b"
+  ];
 
   // LOAD COUNTRY DATA USING PROMISE ALL
 
@@ -39,40 +40,43 @@
     drawMap(countriesData, firmsData);
   });
 
+  function zoomToFeature(e) {
+    map.fitBounds(e.target.getBounds());
+  };
 
   // draw map
   function drawMap(countriesData, firmsData) {
     let countryLayer = L.geoJson(countriesData, {
-        style: function(feature) {
-          return {
-            color: '#444',
+      style: function(feature) {
+        return {
+          color: '#444',
+          weight: 1,
+          fillOpacity: 1,
+        };
+      },
+      onEachFeature: function(feature, layer) {
+        layer.on('mouseover', function() {
+          this.openTooltip();
+          layer.setStyle({
+            color: "yellow",
+            weight: 2,
+            fillOpacity: 1,
+          })
+          // .bringToFront();
+        });
+        layer.on('mouseout', function() {
+          this.closeTooltip();
+          layer.setStyle({
+            color: "#444",
             weight: 1,
             fillOpacity: 1,
-          };
-        },
-        // onEachFeature: function(feature, layer) {
-        //   layer.on('mouseover', function() {
-        //     this.openTooltip();
-        //     layer.setStyle({
-        //       color: "yellow",
-        //       weight: 1,
-        //       fillOpacity: 1,
-        //     })
-        //     // .bringToFront();
-        //   });
-        //   layer.on('mouseout', function() {
-        //     this.closeTooltip();
-        //     layer.setStyle({
-        //       color: "#444",
-        //       weight: 1,
-        //       fillOpacity: 1,
-        //     });
-        //   });
-        //   layer.on('click', function(e) {
-        //     map.setView(e.latlng, 8);
-        //   });
-        // }
-      })
+          });
+        });
+        layer.on({
+          click: zoomToFeature
+        });
+      }
+    })
 
     let firms = $.getJSON("data/firms.geojson", function(data) {
       let firmsLayer = L.geoJson(data, {
@@ -165,17 +169,9 @@
     let breaks = clusters.map(function(cluster) {
       return [cluster[0], cluster.pop()];
     });
-    console.log(breaks);
+    console.log(breaks.length);
     return breaks;
   }
-
-  let colorsCountries = ["#FFFFFF",
-    "#d1e3f3",
-    "#9ac8e1",
-    "#529dcc",
-    "#1c6cb1",
-    "#08306b"
-  ];
 
   function getColor(d, breaks) {
     // console.log(breaks);
@@ -195,17 +191,37 @@
   };
 
   function addLegend(breaks) {
-    let legendControl = L.control({
-      position: "bottomleft",
+    // console.log(breaks);
+    var legend = L.control({
+      position: 'bottomright'
     });
-    legendControl.onAdd = function() {
-      let legend = L.DomUtil.get("legend");
-      L.DomEvent.disableScrollPropagation(legend);
-      L.DomEvent.disableClickPropagation(legend);
-      return legend;
+
+    legend.onAdd = function(map) {
+      let breaks = getClassBreaks();
+
+      var div = L.DomUtil.create('div', 'info legend');
+      // loop through our density intervals and generate a label with a colored square for each interval
+      for (var i = 0; i < breaks.length; i++) {
+        div.innerHTML +=
+          '<i style="background:' + getColor(breaks[i] + 1) + '"></i> ' +
+          breaks[i] + (breaks[i + 1] ? '&ndash;' + breaks[i + 1] + '<br>' : '+');
+      }
+
+      return div;
     };
-    legendControl.addTo(map);
-    updateLegend(map);
+
+    legend.addTo(map);
+    // let legendControl = L.control({
+    //   position: "bottomleft",
+    // });
+    // legendControl.onAdd = function() {
+    //   let legend = L.DomUtil.get("legend");
+    //   L.DomEvent.disableScrollPropagation(legend);
+    //   L.DomEvent.disableClickPropagation(legend);
+    //   return legend;
+    // };
+    // legendControl.addTo(map);
+    // updateLegend(map);
   };
 
   function updateLegend(breaks) {
@@ -226,7 +242,7 @@
         " %</label>"
       );
     }
-    console.log(breaks)
-  };
+    console.log(breaks.length)
+  }
 
 })();

@@ -3,6 +3,7 @@
 "name": "firms",
 "crs": { "type": "name", "properties": { "name": "urn:ogc:def:crs:OGC:1.3:CRS84" } },
 "features": [
+{ "type": "Feature", "properties": { "Region": "New York City", "Country": "United States", "Firms": 455, "Lat": 40.71, "Long": -74.01 }, "geometry": { "type": "Point", "coordinates": [ -74.01, 40.71 ] } },
 { "type": "Feature", "properties": { "Region": "Kabul", "Country": "Afghanistan", "Firms": 1, "Lat": 34.56, "Long": 69.21 }, "geometry": { "type": "Point", "coordinates": [ 69.21, 34.56 ] } },
 { "type": "Feature", "properties": { "Region": "Tirana", "Country": "Albania", "Firms": 1, "Lat": 41.33, "Long": 19.82 }, "geometry": { "type": "Point", "coordinates": [ 19.82, 41.33 ] } },
 { "type": "Feature", "properties": { "Region": "Andorra La Vella", "Country": "Andorra", "Firms": 1, "Lat": 42.51, "Long": 1.52 }, "geometry": { "type": "Point", "coordinates": [ 1.52, 42.51 ] } },
@@ -1618,7 +1619,6 @@
 { "type": "Feature", "properties": { "Region": "Overland Park", "Country": "United States", "Firms": 1, "Lat": 38.98, "Long": -94.67 }, "geometry": { "type": "Point", "coordinates": [ -94.67, 38.98 ] } },
 { "type": "Feature", "properties": { "Region": "Oviedo", "Country": "United States", "Firms": 1, "Lat": 28.67, "Long": -81.21 }, "geometry": { "type": "Point", "coordinates": [ -81.21, 28.67 ] } },
 { "type": "Feature", "properties": { "Region": "Pagosa Springs", "Country": "United States", "Firms": 1, "Lat": 37.27, "Long": -107.01 }, "geometry": { "type": "Point", "coordinates": [ -107.01, 37.27 ] } },
-{ "type": "Feature", "properties": { "Region": "New York City", "Country": "United States", "Firms": 455, "Lat": 40.71, "Long": -74.01 }, "geometry": { "type": "Point", "coordinates": [ -74.01, 40.71 ] } },
 { "type": "Feature", "properties": { "Region": "Montevideo", "Country": "Uruguay", "Firms": 2, "Lat": -56.18, "Long": -34.87 }, "geometry": { "type": "Point", "coordinates": [ -34.87, -56.18 ] } },
 { "type": "Feature", "properties": { "Region": "Barquisimeto", "Country": "Venezuela", "Firms": 1, "Lat": 10.07, "Long": -69.34 }, "geometry": { "type": "Point", "coordinates": [ -69.34, 10.07 ] } },
 { "type": "Feature", "properties": { "Region": "Caracas", "Country": "Venezuela", "Firms": 1, "Lat": 10.5, "Long": -66.88 }, "geometry": { "type": "Point", "coordinates": [ -66.88, 10.5 ] } },
