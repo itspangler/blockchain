@@ -48,6 +48,7 @@ h1 {
 #legend h5 {
   font-size: 1em;
   font-family: "Avenir";
+  text-shadow: 2px 2px #ffff00;
 }
 
 #legend span {
