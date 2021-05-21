@@ -1,9 +1,9 @@
 (function() {
   const map = L.map("map", {
-      zoomControl: false,
-      maxZoom: 6,
-      minZoom: 2,
-      worldCopyJump: true
+    zoomControl: false,
+    maxZoom: 6,
+    minZoom: 2,
+    worldCopyJump: true
   }).setView([30, 60], 2);
 
   const basemap = L.tileLayer(
@@ -25,10 +25,10 @@
   const firms = d3.json("data/firms.geojson");
 
   // function getRadius(area) {
-    // let radius = Math.sqrt(area / Math.PI);
+  // let radius = Math.sqrt(area / Math.PI);
 
-    // return radius * .12;
-    // console.log(radius);
+  // return radius * .12;
+  // console.log(radius);
   // }
 
   // LOAD COUNTRY DATA USING PROMISE ALL
@@ -43,15 +43,37 @@
   // draw map
   function drawMap(countriesData, firmsData) {
     let countryLayer = L.geoJson(countriesData, {
-      style: function(feature) {
-        return {
-          color: '#444',
-          weight: 1,
-          fillOpacity: 1,
-          radius: 1
-        };
-      },
-    });
+        style: function(feature) {
+          return {
+            color: '#444',
+            weight: 1,
+            fillOpacity: 1,
+          };
+        },
+        // onEachFeature: function(feature, layer) {
+        //   layer.on('mouseover', function() {
+        //     this.openTooltip();
+        //     layer.setStyle({
+        //       color: "yellow",
+        //       weight: 1,
+        //       fillOpacity: 1,
+        //     })
+        //     // .bringToFront();
+        //   });
+        //   layer.on('mouseout', function() {
+        //     this.closeTooltip();
+        //     layer.setStyle({
+        //       color: "#444",
+        //       weight: 1,
+        //       fillOpacity: 1,
+        //     });
+        //   });
+        //   layer.on('click', function(e) {
+        //     map.setView(e.latlng, 8);
+        //   });
+        // }
+      })
+
     let firms = $.getJSON("data/firms.geojson", function(data) {
       let firmsLayer = L.geoJson(data, {
         pointToLayer: function(feature, ll) {
@@ -74,7 +96,7 @@
         style: function(feature) {
           let props = feature.properties
           let radius = d3.scaleSqrt()
-            .domain([0, 1e6/2])
+            .domain([0, 1e6 / 2])
             .range([1, 652]);
           return {
             radius: radius(props.Firms)
@@ -83,20 +105,20 @@
         onEachFeature: function(feature, layer) {
           let props = feature.properties
           let radius = d3.scaleSqrt()
-            .domain([0, 1e6/2])
+            .domain([0, 1e6 / 2])
             .range([1, 652]);
           let tooltip = "<h5>" + props.Region + "</h5><b>City/Region:</b> " + props.Country + "<br><b>Number of firms: </b>" + props.Firms.toLocaleString()
           layer.bindTooltip(tooltip);
           layer.on('mouseover', function() {
             this.openTooltip();
             layer.setStyle({
-                color: "#aa7b02",
-                fillColor: "yellow",
-                weight: 0.5,
-                fillOpacity: 0.8,
-                opacity: 0.9
-              })
-              // .bringToFront();
+              color: "#aa7b02",
+              fillColor: "yellow",
+              weight: 0.5,
+              fillOpacity: 0.8,
+              opacity: 0.9
+            })
+            // .bringToFront();
           });
           layer.on('mouseout', function() {
             this.closeTooltip();
