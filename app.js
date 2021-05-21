@@ -4,7 +4,7 @@
       maxZoom: 6,
       minZoom: 2,
       worldCopyJump: true
-  }).setView([30, 60], 3);
+  }).setView([30, 60], 2);
 
   const basemap = L.tileLayer(
     "http://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}.png", {
