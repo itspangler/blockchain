@@ -24,7 +24,7 @@
   const countries = d3.json("data/countries.geojson");
   const firms = d3.json("data/firms.geojson");
 
-  let colorsCountries = ["#FFFFFF",
+  let colorsCountries = [
     "#d1e3f3",
     "#9ac8e1",
     "#529dcc",
@@ -47,9 +47,15 @@
   // draw map
   function drawMap(countriesData, firmsData) {
     let countryLayer = L.geoJson(countriesData, {
+      filter: function(feature) {
+        let props = feature.properties
+        if ((props.exchanges) > 0) {
+          return feature;
+        }
+      },
       style: function(feature) {
         return {
-          color: '#444',
+          color: 'lightgrey',
           weight: 1,
           fillOpacity: 1,
         };
@@ -67,7 +73,7 @@
         layer.on('mouseout', function() {
           this.closeTooltip();
           layer.setStyle({
-            color: "#444",
+            color: "lightgrey",
             weight: 1,
             fillOpacity: 1,
           });
@@ -77,7 +83,6 @@
         });
       }
     })
-
     let firms = $.getJSON("data/firms.geojson", function(data) {
       let firmsLayer = L.geoJson(data, {
         pointToLayer: function(feature, ll) {
@@ -149,6 +154,7 @@
 
   function updateLayer(countryLayer) {
     let breaks = getClassBreaks(countryLayer);
+    updateLegend(breaks);
     countryLayer.eachLayer(function(layer) {
       let props = layer.feature.properties;
       // console.log(props[attributeValue]);
@@ -165,7 +171,7 @@
       values.push(value);
     });
     // console.log(values)
-    let clusters = ss.ckmeans(values, 6);
+    let clusters = ss.ckmeans(values, 5);
     let breaks = clusters.map(function(cluster) {
       return [cluster[0], cluster.pop()];
     });
@@ -175,7 +181,7 @@
 
   function getColor(d, breaks) {
     // console.log(breaks);
-    if (d <= 0) {
+    if (d <= breaks[0][1]) {
       return colorsCountries[0];
     } else if (d <= breaks[1][1]) {
       return colorsCountries[1];
@@ -185,50 +191,25 @@
       return colorsCountries[3];
     } else if (d <= breaks[4][1]) {
       return colorsCountries[4];
-    } else if (d <= breaks[5][1]) {
-      return colorsCountries[5];
     }
   };
 
   function addLegend(breaks) {
-    // console.log(breaks);
-    var legend = L.control({
-      position: 'bottomright'
+    let legendControl = L.control({
+      position: "bottomleft",
     });
-
-    legend.onAdd = function(map) {
-      let breaks = getClassBreaks();
-
-      var div = L.DomUtil.create('div', 'info legend');
-      // loop through our density intervals and generate a label with a colored square for each interval
-      for (var i = 0; i < breaks.length; i++) {
-        div.innerHTML +=
-          '<i style="background:' + getColor(breaks[i] + 1) + '"></i> ' +
-          breaks[i] + (breaks[i + 1] ? '&ndash;' + breaks[i + 1] + '<br>' : '+');
-      }
-
-      return div;
+    legendControl.onAdd = function() {
+      let legend = L.DomUtil.get("legend");
+      L.DomEvent.disableScrollPropagation(legend);
+      L.DomEvent.disableClickPropagation(legend);
+      return legend;
     };
-
-    legend.addTo(map);
-    // let legendControl = L.control({
-    //   position: "bottomleft",
-    // });
-    // legendControl.onAdd = function() {
-    //   let legend = L.DomUtil.get("legend");
-    //   L.DomEvent.disableScrollPropagation(legend);
-    //   L.DomEvent.disableClickPropagation(legend);
-    //   return legend;
-    // };
-    // legendControl.addTo(map);
+    legendControl.addTo(map);
     // updateLegend(map);
   };
 
   function updateLegend(breaks) {
-    // select the legend, add a title, begin an unordered list and assign to a variable
-    let legend = $("#legend").html("<h5>" + "Exchanges" + "</h5>");
-    // console.log(breaks)
-    // loop through the Array of classification break values
+    let legend = $("#legend").html("<h5>" + "Cryptocurrency exchanges" + "<br>" + "by country" + "</h5>");
     for (let i = 0; i <= breaks.length - 1; i++) {
       let color = getColor(breaks[i][0], breaks);
       legend.append(
@@ -238,11 +219,10 @@
         "<label>" +
         (breaks[i][0]) +
         " &mdash; " +
-        (breaks[i][1]) +
-        " %</label>"
+        (breaks[i][1])
       );
     }
-    console.log(breaks.length)
+    console.log(breaks)
   }
 
 })();
