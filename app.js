@@ -96,7 +96,7 @@
                 fillOpacity: 0.8,
                 opacity: 0.9
               })
-              .bringToFront();
+              // .bringToFront();
           });
           layer.on('mouseout', function() {
             this.closeTooltip();
@@ -107,6 +107,9 @@
               fillOpacity: 0.8,
               opacity: 0.9
             });
+          });
+          layer.on('click', function(e) {
+            map.setView(e.latlng, 6);
           });
         }
       })
