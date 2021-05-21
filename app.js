@@ -73,7 +73,7 @@
         },
         style: function(feature) {
           let props = feature.properties
-          const radius = d3.scaleSqrt()
+          let radius = d3.scaleSqrt()
             .domain([0, 1e6/2])
             .range([1, 652]);
           return {
@@ -82,30 +82,44 @@
         },
         onEachFeature: function(feature, layer) {
           let props = feature.properties
+          let radius = d3.scaleSqrt()
+            .domain([0, 1e6/2])
+            .range([1, 652]);
           let tooltip = "<h5>" + props.Region + "</h5><b>City/Region:</b> " + props.Country + "<br><b>Number of firms: </b>" + props.Firms.toLocaleString()
           layer.bindTooltip(tooltip);
           layer.on('mouseover', function() {
             this.openTooltip();
+            layer.setStyle({
+                color: "#aa7b02",
+                fillColor: "yellow",
+                weight: 0.5,
+                fillOpacity: 0.8,
+                opacity: 0.9
+              })
+              .bringToFront();
           });
           layer.on('mouseout', function() {
             this.closeTooltip();
-          });
-          layer.on('click', function(e) {
-            map.setView(e.latlng, 6);
+            layer.setStyle({
+              fillColor: "#ffbc04",
+              radius: radius(props.Firms),
+              weight: 0.5,
+              fillOpacity: 0.8,
+              opacity: 0.9
+            });
           });
         }
       })
       countryLayer.addTo(map).bringToBack();
       firmsLayer.addTo(map);
+      updateLayer(countryLayer);
+      addLegend();
     });
-
-    addLegend();
-    updateLayer(countryLayer);
   }
   // FUNCTIONS
 
   function updateLayer(countryLayer) {
-    var breaks = getClassBreaks(countryLayer);
+    let breaks = getClassBreaks(countryLayer);
     countryLayer.eachLayer(function(layer) {
       let props = layer.feature.properties;
       // console.log(props[attributeValue]);
@@ -116,14 +130,14 @@
   }
 
   function getClassBreaks(countryLayer) {
-    var values = [];
+    let values = [];
     countryLayer.eachLayer(function(layer) {
       let value = layer.feature.properties[attributeValue];
       values.push(value);
     });
     // console.log(values)
-    var clusters = ss.ckmeans(values, 6);
-    var breaks = clusters.map(function(cluster) {
+    let clusters = ss.ckmeans(values, 6);
+    let breaks = clusters.map(function(cluster) {
       return [cluster[0], cluster.pop()];
     });
     console.log(breaks);
@@ -156,26 +170,26 @@
   };
 
   function addLegend(breaks) {
-    var legendControl = L.control({
+    let legendControl = L.control({
       position: "bottomleft",
     });
     legendControl.onAdd = function() {
-      var legend = L.DomUtil.get("legend");
+      let legend = L.DomUtil.get("legend");
       L.DomEvent.disableScrollPropagation(legend);
       L.DomEvent.disableClickPropagation(legend);
       return legend;
     };
     legendControl.addTo(map);
     updateLegend(map);
-  }
+  };
 
   function updateLegend(breaks) {
     // select the legend, add a title, begin an unordered list and assign to a variable
-    var legend = $("#legend").html("<h5>" + "Exchanges" + "</h5>");
-
+    let legend = $("#legend").html("<h5>" + "Exchanges" + "</h5>");
+    // console.log(breaks)
     // loop through the Array of classification break values
-    for (var i = 0; i <= breaks.length - 1; i++) {
-      var color = getColor(breaks[i][0], breaks);
+    for (let i = 0; i <= breaks.length - 1; i++) {
+      let color = getColor(breaks[i][0], breaks);
       legend.append(
         "<ul>" + '<span style="background:' +
         color +
@@ -187,6 +201,7 @@
         " %</label>"
       );
     }
-  }
+    console.log(breaks)
+  };
 
 })();
