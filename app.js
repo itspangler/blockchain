@@ -37,9 +37,6 @@
     const countriesData = data[0];
     const firmsData = data[1];
     drawMap(countriesData, firmsData);
-    // map.fitWorld();
-    // map.setMaxBounds(  [[-90,-180],   [90,180]]  );
-    // map.setView([20, 60], 3);
   });
 
 
@@ -77,7 +74,7 @@
         style: function(feature) {
           let props = feature.properties
           const radius = d3.scaleSqrt()
-            .domain([0, 1e6])
+            .domain([0, 1e6/2])
             .range([1, 652]);
           return {
             radius: radius(props.Firms)
@@ -102,7 +99,7 @@
       firmsLayer.addTo(map);
     });
 
-    // addLegend();
+    addLegend();
     updateLayer(countryLayer);
   }
   // FUNCTIONS
@@ -125,15 +122,15 @@
       values.push(value);
     });
     // console.log(values)
-    var clusters = ss.ckmeans(values, 5);
+    var clusters = ss.ckmeans(values, 6);
     var breaks = clusters.map(function(cluster) {
       return [cluster[0], cluster.pop()];
     });
-    // console.log(breaks);
+    console.log(breaks);
     return breaks;
   }
 
-  let colorsCountries = ["#ecf6ff",
+  let colorsCountries = ["#FFFFFF",
     "#d1e3f3",
     "#9ac8e1",
     "#529dcc",
@@ -142,7 +139,7 @@
   ];
 
   function getColor(d, breaks) {
-    if (d <= breaks[0][1]) {
+    if (d <= 0) {
       return colorsCountries[0];
     } else if (d <= breaks[1][1]) {
       return colorsCountries[1];
@@ -152,12 +149,14 @@
       return colorsCountries[3];
     } else if (d <= breaks[4][1]) {
       return colorsCountries[4];
+    } else if (d <= breaks[5][1]) {
+      return colorsCountries[5];
     }
   };
 
   function addLegend(breaks) {
     var legendControl = L.control({
-      position: "topleft",
+      position: "bottomleft",
     });
     legendControl.onAdd = function() {
       var legend = L.DomUtil.get("legend");
@@ -171,12 +170,11 @@
 
   function updateLegend(breaks) {
     // select the legend, add a title, begin an unordered list and assign to a variable
-    var legend = $("#legend").html("<h5>" + labels[currentBGAttribute] + "</h5>");
+    var legend = $("#legend").html("<h5>" + "Exchanges" + "</h5>");
 
     // loop through the Array of classification break values
     for (var i = 0; i <= breaks.length - 1; i++) {
       var color = getColor(breaks[i][0], breaks);
-
       legend.append(
         "<ul>" + '<span style="background:' +
         color +
