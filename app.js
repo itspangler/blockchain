@@ -1,10 +1,10 @@
 (function() {
   const map = L.map("map", {
     zoomControl: false,
-    maxZoom: 6,
-    minZoom: 2,
+    maxZoom: 7,
+    minZoom: 3,
     worldCopyJump: true
-  }).setView([30, 60], 2);
+  }).setView([30, 0], 3);
 
   const basemap = L.tileLayer(
     "http://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}.png", {
