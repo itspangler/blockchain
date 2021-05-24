@@ -68,7 +68,6 @@
             weight: 2,
             fillOpacity: 1,
           })
-          // .bringToFront();
         });
         layer.on('mouseout', function() {
           this.closeTooltip();
@@ -76,7 +75,7 @@
             color: "lightgrey",
             weight: 1,
             fillOpacity: 1,
-          });
+          })
         });
         layer.on({
           click: zoomToFeature
@@ -87,7 +86,6 @@
       let firmsLayer = L.geoJson(data, {
         pointToLayer: function(feature, ll) {
           let props = feature.properties
-          // console.log(props.Firms);
           return L.circleMarker(ll, {
             color: '#aa7b02',
             weight: 0.5,
@@ -127,7 +125,6 @@
               fillOpacity: 0.8,
               opacity: 0.9
             })
-            // .bringToFront();
           });
           layer.on('mouseout', function() {
             this.closeTooltip();
@@ -196,7 +193,7 @@
 
   function addLegend(breaks) {
     let legendControl = L.control({
-      position: "bottomleft",
+      position: "bottomright",
     });
     legendControl.onAdd = function() {
       let legend = L.DomUtil.get("legend");
